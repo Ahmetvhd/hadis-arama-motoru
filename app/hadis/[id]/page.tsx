@@ -1,0 +1,118 @@
+import { notFound } from 'next/navigation';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft, BookOpen } from 'lucide-react';
+import Link from 'next/link';
+import { readFileSync } from 'fs';
+import { join } from 'path';
+import { parseHadisData } from '@/lib/hadis-parser';
+
+interface PageProps {
+  params: {
+    id: string;
+  };
+}
+
+export default function HadisDetailPage({ params }: PageProps) {
+  let hadisler: any[] = [];
+  
+  try {
+    const filePath = join(process.cwd(), 'hadisler.json');
+    const fileContent = readFileSync(filePath, 'utf-8');
+    const hadisData = JSON.parse(fileContent);
+    const parsed = parseHadisData(hadisData);
+    hadisler = parsed.hadisler;
+  } catch (error) {
+    console.error('Error loading hadis data:', error);
+  }
+  
+  const hadis = hadisler.find((h) => h.id === params.id);
+
+  if (!hadis) {
+    notFound();
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      <header className="border-b bg-card">
+        <div className="container mx-auto px-4 py-4">
+          <Link href="/">
+            <Button variant="ghost" className="mb-4">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Geri Dön
+            </Button>
+          </Link>
+          <h1 className="text-2xl font-bold">Hadis Detayı</h1>
+        </div>
+      </header>
+
+      <main className="container mx-auto px-4 py-8 max-w-4xl">
+        <Card>
+          <CardHeader>
+            <div className="flex items-start justify-between">
+              <CardTitle className="text-2xl">{hadis.title || 'Hadis'}</CardTitle>
+              <Badge variant="secondary" className="text-lg">
+                #{hadis.id}
+              </Badge>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {hadis.arabicText && (
+              <div className="space-y-2">
+                <h2 className="text-lg font-semibold flex items-center gap-2">
+                  <BookOpen className="h-5 w-5" />
+                  Arapça Metin
+                </h2>
+                <div className="text-right font-arabic text-xl leading-relaxed bg-muted/50 p-6 rounded-lg">
+                  {hadis.arabicText}
+                </div>
+              </div>
+            )}
+
+            {hadis.turkishText && (
+              <div className="space-y-2">
+                <h2 className="text-lg font-semibold">Türkçe Çeviri</h2>
+                <div className="text-base leading-relaxed bg-muted/30 p-6 rounded-lg">
+                  {hadis.turkishText}
+                </div>
+              </div>
+            )}
+
+            {hadis.explanation && (
+              <div className="space-y-2">
+                <h2 className="text-lg font-semibold">Açıklama</h2>
+                <div className="text-base leading-relaxed bg-blue-50 dark:bg-blue-950/20 p-6 rounded-lg whitespace-pre-wrap">
+                  {hadis.explanation}
+                </div>
+              </div>
+            )}
+
+            <div className="flex flex-wrap items-center gap-4 pt-4 border-t">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <BookOpen className="h-4 w-4" />
+                <span>Kitap ID: {hadis.kitapId}</span>
+              </div>
+              {hadis.bolumId && (
+                <div className="text-sm text-muted-foreground">
+                  Bölüm ID: {hadis.bolumId}
+                </div>
+              )}
+              {hadis.altBolumId && (
+                <div className="text-sm text-muted-foreground">
+                  Alt Bölüm ID: {hadis.altBolumId}
+                </div>
+              )}
+              {hadis.siraNo && (
+                <div className="text-sm text-muted-foreground">
+                  Sıra: {hadis.siraNo}
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </main>
+    </div>
+  );
+}
+
