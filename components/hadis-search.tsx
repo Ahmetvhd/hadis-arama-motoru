@@ -6,7 +6,6 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Search, BookOpen, Loader2, X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -97,47 +96,45 @@ export function HadisSearch() {
         </div>
       )}
 
-      <ScrollArea className="h-[calc(100vh-200px)] overflow-y-auto">
-        <div className="space-y-4 pr-4">
-          {results.map((hadis) => (
-            <Card key={hadis.id} className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <CardTitle className="text-lg leading-tight">
-                    {hadis.title || 'Hadis'}
-                  </CardTitle>
-                  <Badge variant="secondary" className="ml-2">
-                    #{hadis.id}
-                  </Badge>
+      <div className="space-y-4">
+        {results.map((hadis) => (
+          <Card key={hadis.id} className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <div className="flex items-start justify-between">
+                <CardTitle className="text-lg leading-tight">
+                  {hadis.title || 'Hadis'}
+                </CardTitle>
+                <Badge variant="secondary" className="ml-2">
+                  #{hadis.id}
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {hadis.arabicText && (
+                <div className="text-right font-arabic text-lg leading-relaxed bg-muted/50 p-4 rounded-lg">
+                  {hadis.arabicText}
                 </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {hadis.arabicText && (
-                  <div className="text-right font-arabic text-lg leading-relaxed bg-muted/50 p-4 rounded-lg">
-                    {hadis.arabicText}
-                  </div>
-                )}
-                {hadis.turkishText && (
-                  <div className="text-base leading-relaxed">
-                    {hadis.turkishText.substring(0, 500)}
-                    {hadis.turkishText.length > 500 && '...'}
-                  </div>
-                )}
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <BookOpen className="h-4 w-4" />
-                  <span>Kitap: {hadis.kitapId}</span>
-                  {hadis.bolumId && <span>• Bölüm: {hadis.bolumId}</span>}
+              )}
+              {hadis.turkishText && (
+                <div className="text-base leading-relaxed">
+                  {hadis.turkishText.substring(0, 500)}
+                  {hadis.turkishText.length > 500 && '...'}
                 </div>
-                <Link href={`/hadis/${hadis.id}`}>
-                  <Button variant="outline" className="w-full">
-                    Detaylı Oku
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </ScrollArea>
+              )}
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <BookOpen className="h-4 w-4" />
+                <span>Kitap: {hadis.kitapId}</span>
+                {hadis.bolumId && <span>• Bölüm: {hadis.bolumId}</span>}
+              </div>
+              <Link href={`/hadis/${hadis.id}`}>
+                <Button variant="outline" className="w-full">
+                  Detaylı Oku
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
 
       {!loading && query && results.length === 0 && (
         <Card>
