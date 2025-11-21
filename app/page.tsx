@@ -1,6 +1,5 @@
 import { Suspense } from 'react';
 import { HadisSearch } from '@/components/hadis-search';
-import { CategorySidebar } from '@/components/category-sidebar';
 
 function SearchWrapper() {
   return <HadisSearch />;
@@ -21,35 +20,12 @@ export default function Home() {
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          <aside className="lg:col-span-1">
-            <CategorySidebar />
-          </aside>
-          
-          <div className="lg:col-span-3">
-            <Suspense fallback={<div className="text-center py-8">Yükleniyor...</div>}>
-              <SearchWrapper />
-            </Suspense>
-          </div>
+        <div className="w-full">
+          <Suspense fallback={<div className="text-center py-8">Yükleniyor...</div>}>
+            <SearchWrapper />
+          </Suspense>
         </div>
       </main>
-
-      <footer className="border-t mt-12 py-6">
-        <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p className="mb-2">
-            <strong>ALLAH (C.C.) VE RESULÜ DOĞRU SÖYLER!!!</strong>
-          </p>
-          <p>
-            SAHABE&apos;NİN EN BİLİNEN ÖZELLİĞİ YALAN SÖYLEMEMELERİDİR! HADİSLER SAHABE TARAFINDAN YAZILDI, 
-            TABİİN VE TEBEU&apos;T-TABİİN TARAFINDAN YAZILDI VE ORJİNAL NÜSHALARI MEVCUD VE MUHAFAZA ALTINDADIR.
-          </p>
-          <p className="mt-2">
-            HADİS KUR&apos;ANI AÇIKLAR, ALLAH&apos;IN EMİR, YASAK, TAVSİYE, MÜJDE VE UYARILARINI TAŞIR! 
-            YANİ DİNDİR. UYDURMALARI SAYMAZSAK ZAYIFLARINA TEMKİNLİ BAKARSAK; CENNET&apos;İN YOLUNU GÖSTERİR 
-            CEHENNEM&apos;DEN KORUNMAYI ÖĞRETİR.
-          </p>
-        </div>
-      </footer>
     </div>
   );
 }

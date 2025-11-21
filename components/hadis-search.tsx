@@ -97,7 +97,7 @@ export function HadisSearch() {
         </div>
       )}
 
-      <ScrollArea className="h-[calc(100vh-300px)]">
+      <ScrollArea className="h-[calc(100vh-200px)] overflow-y-auto">
         <div className="space-y-4 pr-4">
           {results.map((hadis) => (
             <Card key={hadis.id} className="hover:shadow-lg transition-shadow">
