@@ -23,7 +23,6 @@ const KITAP_NAMES: Record<string, string> = {
 };
 
 export function CategorySidebar() {
-  const [categories, setCategories] = useState<Category[]>([]);
   const [grouped, setGrouped] = useState<Record<string, Category[]>>({});
   const [loading, setLoading] = useState(true);
   const [expandedKitaplar, setExpandedKitaplar] = useState<Set<string>>(new Set());
@@ -38,7 +37,6 @@ export function CategorySidebar() {
       const data = await response.json();
       
       if (data.success) {
-        setCategories(data.categories || []);
         setGrouped(data.grouped || {});
         // İlk kitabı açık tut
         const firstKitap = Object.keys(data.grouped || {})[0];

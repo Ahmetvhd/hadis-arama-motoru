@@ -1,7 +1,7 @@
 import { Hadis, Category } from './types';
 
 // JSON'dan hadis verilerini parse eder
-export function parseHadisData(jsonData: any[]): { hadisler: Hadis[]; categories: Category[] } {
+export function parseHadisData(jsonData: unknown[]): { hadisler: Hadis[]; categories: Category[] } {
   const hadisler: Hadis[] = [];
   const categories: Category[] = [];
   const categoryMap = new Map<string, Category>();
@@ -63,7 +63,6 @@ export function parseHadisData(jsonData: any[]): { hadisler: Hadis[]; categories
     const lines = fullContent.split(/\\r\\n|\\n|\r\n|\n/).filter((l: string) => l.trim());
     
     let arabicStarted = false;
-    let turkishStarted = false;
 
     for (const line of lines) {
       const trimmedLine = line.trim();
@@ -81,14 +80,13 @@ export function parseHadisData(jsonData: any[]): { hadisler: Hadis[]; categories
         arabicText += trimmedLine + ' ';
         arabicStarted = true;
       } 
-      // Türkçe metin (Arapça karakter yoksa ve açıklama değilse)
-      else if (!trimmedLine.includes('AÇIKLAMA:') && !trimmedLine.match(/^\d+\./)) {
-        // Eğer Türkçe karakterler varsa veya Arapça başladıysa
-        if (arabicStarted || /[çğıöşüÇĞIİÖŞÜ]/.test(trimmedLine)) {
-          turkishText += trimmedLine + ' ';
-          turkishStarted = true;
+        // Türkçe metin (Arapça karakter yoksa ve açıklama değilse)
+        else if (!trimmedLine.includes('AÇIKLAMA:') && !trimmedLine.match(/^\d+\./)) {
+          // Eğer Türkçe karakterler varsa veya Arapça başladıysa
+          if (arabicStarted || /[çğıöşüÇĞIİÖŞÜ]/.test(trimmedLine)) {
+            turkishText += trimmedLine + ' ';
+          }
         }
-      }
     }
 
     // Eğer açıklama varsa ve ayrı bir alandaysa

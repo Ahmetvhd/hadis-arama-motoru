@@ -12,7 +12,7 @@ export default function Home() {
       <header className="border-b bg-card">
         <div className="container mx-auto px-4 py-6">
           <h1 className="text-3xl font-bold text-center">
-            DELAİLU'D-DİN KİTABI
+            DELAİLU&apos;D-DİN KİTABI
           </h1>
           <p className="text-center text-muted-foreground mt-2">
             SÜNNET • İCMA • KIYAS - TEKRARLARLA en az 90.000 HADİS
@@ -40,13 +40,13 @@ export default function Home() {
             <strong>ALLAH (C.C.) VE RESULÜ DOĞRU SÖYLER!!!</strong>
           </p>
           <p>
-            SAHABE'NİN EN BİLİNEN ÖZELLİĞİ YALAN SÖYLEMEMELERİDİR! HADİSLER SAHABE TARAFINDAN YAZILDI, 
-            TABİİN VE TEBEU'T-TABİİN TARAFINDAN YAZILDI VE ORJİNAL NÜSHALARI MEVCUD VE MUHAFAZA ALTINDADIR.
+            SAHABE&apos;NİN EN BİLİNEN ÖZELLİĞİ YALAN SÖYLEMEMELERİDİR! HADİSLER SAHABE TARAFINDAN YAZILDI, 
+            TABİİN VE TEBEU&apos;T-TABİİN TARAFINDAN YAZILDI VE ORJİNAL NÜSHALARI MEVCUD VE MUHAFAZA ALTINDADIR.
           </p>
           <p className="mt-2">
-            HADİS KUR'ANI AÇIKLAR, ALLAH'IN EMİR, YASAK, TAVSİYE, MÜJDE VE UYARILARINI TAŞIR! 
-            YANİ DİNDİR. UYDURMALARI SAYMAZSAK ZAYIFLARINA TEMKİNLİ BAKARSAK; CENNET'İN YOLUNU GÖSTERİR 
-            CEHENNEM'DEN KORUNMAYI ÖĞRETİR.
+            HADİS KUR&apos;ANI AÇIKLAR, ALLAH&apos;IN EMİR, YASAK, TAVSİYE, MÜJDE VE UYARILARINI TAŞIR! 
+            YANİ DİNDİR. UYDURMALARI SAYMAZSAK ZAYIFLARINA TEMKİNLİ BAKARSAK; CENNET&apos;İN YOLUNU GÖSTERİR 
+            CEHENNEM&apos;DEN KORUNMAYI ÖĞRETİR.
           </p>
         </div>
       </footer>

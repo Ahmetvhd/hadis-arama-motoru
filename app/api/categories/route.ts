@@ -2,8 +2,9 @@ import { NextResponse } from 'next/server';
 import { readFileSync, readdirSync } from 'fs';
 import { join } from 'path';
 import { parseHadisData } from '@/lib/hadis-parser';
+import { Category } from '@/lib/types';
 
-let cachedCategories: any = null;
+let cachedCategories: Category[] | null = null;
 
 export async function GET() {
   try {
@@ -40,7 +41,7 @@ export async function GET() {
           throw new Error('No hadis data files found');
         }
         
-        let allHadisData: any[] = [];
+        let allHadisData: unknown[] = [];
         
         // Tüm parçaları oku
         for (const file of files) {
@@ -59,7 +60,7 @@ export async function GET() {
     }
 
     // Kategorileri grupla
-    const grouped = cachedCategories.reduce((acc: any, cat: any) => {
+    const grouped = cachedCategories.reduce((acc: Record<string, Category[]>, cat: Category) => {
       if (!acc[cat.kitapId]) {
         acc[cat.kitapId] = [];
       }

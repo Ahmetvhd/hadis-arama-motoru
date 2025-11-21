@@ -14,16 +14,18 @@ interface PageProps {
   }>;
 }
 
+import { readdirSync } from 'fs';
+import { Hadis } from '@/lib/types';
+
 export default async function HadisDetailPage({ params }: PageProps) {
   const { id } = await params;
-  let hadisler: any[] = [];
+  let hadisler: Hadis[] = [];
   
   try {
     const dataDir = join(process.cwd(), 'data');
-    const { readdirSync } = require('fs');
     const files = readdirSync(dataDir).filter((f: string) => f.startsWith('hadisler-') && f.endsWith('.json')).sort();
     
-    let allHadisData: any[] = [];
+    let allHadisData: unknown[] = [];
     
     // Tüm parçaları oku
     for (const file of files) {

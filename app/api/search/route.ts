@@ -5,8 +5,9 @@ import { parseHadisData } from '@/lib/hadis-parser';
 import { searchHadis, filterByCategory } from '@/lib/search';
 
 // Hadis verilerini bir kez parse et ve cache'le
-let cachedHadisler: any = null;
-let cachedCategories: any = null;
+import { Hadis, Category } from '@/lib/types';
+let cachedHadisler: Hadis[] | null = null;
+let cachedCategories: Category[] | null = null;
 
 function getHadisData() {
   if (!cachedHadisler) {
@@ -42,7 +43,7 @@ function getHadisData() {
         throw new Error('No hadis data files found');
       }
       
-      let allHadisData: any[] = [];
+      let allHadisData: unknown[] = [];
       
       // Tüm parçaları oku
       for (const file of files) {
@@ -82,7 +83,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Arama yap
-    let results = [];
+    let results: (Hadis & { score?: number; matches?: string[] })[] = [];
     if (query.trim()) {
       const searchResults = searchHadis(filteredHadisler, query, limit);
       results = searchResults.map(r => ({
