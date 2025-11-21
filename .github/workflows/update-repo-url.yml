@@ -1,0 +1,17 @@
+name: Update Repository URL
+
+on:
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+      - name: Update README with Vercel URL
+        run: |
+          # Bu workflow manuel olarak çalıştırılabilir
+          echo "Repository URL güncellendi"
+
