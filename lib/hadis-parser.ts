@@ -60,7 +60,7 @@ export function parseHadisData(jsonData: any[]): { hadisler: Hadis[]; categories
     let title = '';
 
     // İçeriği satırlara böl
-    const lines = fullContent.split(/\\r\\n|\\n|\r\n|\n/).filter(l => l.trim());
+    const lines = fullContent.split(/\\r\\n|\\n|\r\n|\n/).filter((l: string) => l.trim());
     
     let arabicStarted = false;
     let turkishStarted = false;

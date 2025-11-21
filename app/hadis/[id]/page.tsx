@@ -9,12 +9,13 @@ import { join } from 'path';
 import { parseHadisData } from '@/lib/hadis-parser';
 
 interface PageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
-export default function HadisDetailPage({ params }: PageProps) {
+export default async function HadisDetailPage({ params }: PageProps) {
+  const { id } = await params;
   let hadisler: any[] = [];
   
   try {
@@ -38,7 +39,7 @@ export default function HadisDetailPage({ params }: PageProps) {
     console.error('Error loading hadis data:', error);
   }
   
-  const hadis = hadisler.find((h) => h.id === params.id);
+  const hadis = hadisler.find((h) => h.id === id);
 
   if (!hadis) {
     notFound();
