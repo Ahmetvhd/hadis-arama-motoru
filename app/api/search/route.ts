@@ -12,7 +12,35 @@ function getHadisData() {
   if (!cachedHadisler) {
     try {
       const dataDir = join(process.cwd(), 'data');
-      const files = readdirSync(dataDir).filter(f => f.startsWith('hadisler-') && f.endsWith('.json')).sort();
+      
+      // Klasörün varlığını kontrol et
+      let files: string[] = [];
+      try {
+        files = readdirSync(dataDir).filter(f => f.startsWith('hadisler-') && f.endsWith('.json')).sort();
+      } catch (dirError) {
+        console.error('Data directory not found, trying alternative paths:', dirError);
+        // Alternatif yolları dene
+        const altPaths = [
+          join(process.cwd(), 'public', 'data'),
+          join(process.cwd(), '..', 'data'),
+        ];
+        
+        for (const altPath of altPaths) {
+          try {
+            files = readdirSync(altPath).filter(f => f.startsWith('hadisler-') && f.endsWith('.json')).sort();
+            if (files.length > 0) {
+              dataDir = altPath;
+              break;
+            }
+          } catch {
+            continue;
+          }
+        }
+      }
+      
+      if (files.length === 0) {
+        throw new Error('No hadis data files found');
+      }
       
       let allHadisData: any[] = [];
       
