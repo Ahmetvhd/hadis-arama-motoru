@@ -11,7 +11,7 @@ let cachedCategories: any = null;
 function getHadisData() {
   if (!cachedHadisler) {
     try {
-      const dataDir = join(process.cwd(), 'data');
+      let dataDir = join(process.cwd(), 'data');
       
       // Klasörün varlığını kontrol et
       let files: string[] = [];
