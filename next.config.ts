@@ -2,13 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
-  // Büyük JSON dosyaları için
-  webpack: (config) => {
-    config.resolve.alias = {
-      ...config.resolve.alias,
-    };
-    return config;
-  },
+  // Turbopack config (Next.js 16 için)
+  turbopack: {},
   // API route'lar için timeout artır
   experimental: {
     serverActions: {
