@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { readFileSync } from 'fs';
+import { readFileSync, readdirSync } from 'fs';
 import { join } from 'path';
 import { parseHadisData } from '@/lib/hadis-parser';
 
@@ -9,10 +9,20 @@ export async function GET() {
   try {
     if (!cachedCategories) {
       try {
-        const filePath = join(process.cwd(), 'hadisler.json');
-        const fileContent = readFileSync(filePath, 'utf-8');
-        const hadisData = JSON.parse(fileContent);
-        const parsed = parseHadisData(hadisData);
+        const dataDir = join(process.cwd(), 'data');
+        const files = readdirSync(dataDir).filter(f => f.startsWith('hadisler-') && f.endsWith('.json')).sort();
+        
+        let allHadisData: any[] = [];
+        
+        // Tüm parçaları oku
+        for (const file of files) {
+          const filePath = join(dataDir, file);
+          const fileContent = readFileSync(filePath, 'utf-8');
+          const chunkData = JSON.parse(fileContent);
+          allHadisData = allHadisData.concat(chunkData);
+        }
+        
+        const parsed = parseHadisData(allHadisData);
         cachedCategories = parsed.categories;
       } catch (error) {
         console.error('Error loading hadis data:', error);

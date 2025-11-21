@@ -42,3 +42,4 @@ next-env.d.ts
 
 # large data files
 hadisler.json
+# data klasöründe parçalanmış dosyalar var, onları commit edeceğiz

@@ -18,10 +18,21 @@ export default function HadisDetailPage({ params }: PageProps) {
   let hadisler: any[] = [];
   
   try {
-    const filePath = join(process.cwd(), 'hadisler.json');
-    const fileContent = readFileSync(filePath, 'utf-8');
-    const hadisData = JSON.parse(fileContent);
-    const parsed = parseHadisData(hadisData);
+    const dataDir = join(process.cwd(), 'data');
+    const { readdirSync } = require('fs');
+    const files = readdirSync(dataDir).filter((f: string) => f.startsWith('hadisler-') && f.endsWith('.json')).sort();
+    
+    let allHadisData: any[] = [];
+    
+    // Tüm parçaları oku
+    for (const file of files) {
+      const filePath = join(dataDir, file);
+      const fileContent = readFileSync(filePath, 'utf-8');
+      const chunkData = JSON.parse(fileContent);
+      allHadisData = allHadisData.concat(chunkData);
+    }
+    
+    const parsed = parseHadisData(allHadisData);
     hadisler = parsed.hadisler;
   } catch (error) {
     console.error('Error loading hadis data:', error);
