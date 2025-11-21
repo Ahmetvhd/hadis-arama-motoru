@@ -2,10 +2,9 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
-  // Turbopack config (Next.js 16 için)
-  turbopack: {},
-  // API route'lar için timeout artır
+  // Turbopack'i devre dışı bırak, Webpack kullan
   experimental: {
+    turbo: false,
     serverActions: {
       bodySizeLimit: '10mb',
     },
