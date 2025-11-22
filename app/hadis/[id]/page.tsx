@@ -78,7 +78,7 @@ export default async function HadisDetailPage({ params }: PageProps) {
                   <BookOpen className="h-5 w-5" />
                   Arapça Metin
                 </h2>
-                <div className="text-right font-arabic text-xl leading-relaxed bg-muted/50 p-6 rounded-lg">
+                <div className="text-right font-arabic text-xl leading-relaxed bg-muted/50 p-6 rounded-lg whitespace-pre-wrap">
                   {hadis.arabicText}
                 </div>
               </div>
@@ -87,7 +87,7 @@ export default async function HadisDetailPage({ params }: PageProps) {
             {hadis.turkishText && (
               <div className="space-y-2">
                 <h2 className="text-lg font-semibold">Türkçe Çeviri</h2>
-                <div className="text-base leading-relaxed bg-muted/30 p-6 rounded-lg">
+                <div className="text-base leading-relaxed bg-muted/30 p-6 rounded-lg whitespace-pre-wrap">
                   {hadis.turkishText}
                 </div>
               </div>

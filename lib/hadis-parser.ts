@@ -1,16 +1,25 @@
 import { Hadis, Category } from './types';
 
-// JSON'daki özel karakterleri temizle (\\n, \\r, vb.)
+// JSON'daki özel karakterleri gerçek satır sonlarına çevir
 function cleanText(text: string): string {
   if (!text) return '';
   return text
-    .replace(/\\n/g, ' ')
-    .replace(/\\r/g, ' ')
-    .replace(/\\r\\n/g, ' ')
-    .replace(/\r\n/g, ' ')
-    .replace(/\n/g, ' ')
-    .replace(/\r/g, ' ')
-    .replace(/\s+/g, ' ')
+    // Önce escape edilmiş karakterleri gerçek karakterlere çevir
+    .replace(/\\n/g, '\n')
+    .replace(/\\r/g, '\r')
+    .replace(/\\r\\n/g, '\n')
+    .replace(/\\'/g, "'")
+    .replace(/\\"/g, '"')
+    .replace(/\\\\/g, '\\')
+    // Çift tırnak ve tek tırnak temizle
+    .replace(/\\'\''/g, "'")
+    .replace(/''/g, "'")
+    // Fazla boşlukları temizle ama satır sonlarını koru
+    .replace(/[ \t]+/g, ' ')
+    // Birden fazla satır sonunu tek satır sonuna çevir (max 2)
+    .replace(/\n{3,}/g, '\n\n')
+    .replace(/\r{3,}/g, '\r\r')
+    // Başta ve sonda gereksiz boşlukları temizle
     .trim();
 }
 
@@ -73,11 +82,19 @@ export function parseHadisData(jsonData: unknown[]): { hadisler: Hadis[]; catego
     let turkishText = '';
     let title = '';
 
-    // İçeriği satırlara böl (önce özel karakterleri temizle ama satır yapısını koru)
-    const lines = fullContent
+    // İçeriği önce temizle (escape karakterlerini gerçek karakterlere çevir)
+    const processedContent = fullContent
       .replace(/\\r\\n/g, '\n')
       .replace(/\\n/g, '\n')
       .replace(/\\r/g, '\n')
+      .replace(/\\'/g, "'")
+      .replace(/\\"/g, '"')
+      .replace(/\\\\/g, '\\')
+      .replace(/\\'\''/g, "'")
+      .replace(/''/g, "'");
+    
+    // İçeriği satırlara böl
+    const lines = processedContent
       .split(/\n/)
       .map((l: string) => l.trim())
       .filter((l: string) => l.length > 0);
@@ -90,20 +107,20 @@ export function parseHadisData(jsonData: unknown[]): { hadisler: Hadis[]; catego
       // Başlık kontrolü (genellikle ilk satır veya numaralı başlık)
       if (!title && (line.match(/^\d+\./) || line.length < 100)) {
         if (!hasArabic || !/[\u0600-\u06FF]/.test(line)) {
-          title = cleanText(line).substring(0, 200);
+          title = line.substring(0, 200);
         }
       }
 
       // Arapça metin kontrolü
       if (/[\u0600-\u06FF]/.test(line) || line.includes('حَدّثَنا') || line.includes('قَالَ')) {
-        arabicText += cleanText(line) + ' ';
+        arabicText += line + '\n';
         arabicStarted = true;
       } 
       // Türkçe metin (Arapça karakter yoksa ve açıklama değilse)
       else if (!line.includes('AÇIKLAMA:') && !line.match(/^\d+\./)) {
         // Eğer Türkçe karakterler varsa veya Arapça başladıysa
         if (arabicStarted || /[çğıöşüÇĞIİÖŞÜ]/.test(line)) {
-          turkishText += cleanText(line) + ' ';
+          turkishText += line + '\n';
         }
       }
     }
@@ -115,18 +132,18 @@ export function parseHadisData(jsonData: unknown[]): { hadisler: Hadis[]; catego
     }
 
     // Başlık yoksa ilk satırdan oluştur
-    if (!title && fullContent) {
-      const firstLine = cleanText(fullContent).substring(0, 100);
+    if (!title && processedContent) {
+      const firstLine = processedContent.split('\n')[0] || processedContent.substring(0, 100);
       title = firstLine.replace(/[\u0600-\u06FF]/g, '').trim().substring(0, 200) || 'Hadis';
     }
 
     // Sadece gerçek hadis içeriği olanları ekle
-    if (hadisId && (arabicText.trim() || turkishText.trim() || fullContent.length > 50)) {
+    if (hadisId && (arabicText.trim() || turkishText.trim() || processedContent.length > 50)) {
       hadisler.push({
         id: hadisId,
         title: cleanText(title || 'Hadis'),
         arabicText: cleanText(arabicText),
-        turkishText: cleanText(turkishText) || (fullContent.length > 200 ? cleanText(fullContent.substring(0, 500)) : cleanText(fullContent)),
+        turkishText: cleanText(turkishText) || (processedContent.length > 200 ? cleanText(processedContent.substring(0, 500)) : cleanText(processedContent)),
         explanation: cleanExplanation,
         kitapId,
         bolumId,

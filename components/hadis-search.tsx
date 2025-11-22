@@ -110,17 +110,17 @@ export function HadisSearch() {
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              {hadis.arabicText && (
-                <div className="text-right font-arabic text-lg leading-relaxed bg-muted/50 p-4 rounded-lg">
-                  {hadis.arabicText}
-                </div>
-              )}
-              {hadis.turkishText && (
-                <div className="text-base leading-relaxed">
-                  {hadis.turkishText.substring(0, 500)}
-                  {hadis.turkishText.length > 500 && '...'}
-                </div>
-              )}
+                {hadis.arabicText && (
+                  <div className="text-right font-arabic text-lg leading-relaxed bg-muted/50 p-4 rounded-lg whitespace-pre-wrap">
+                    {hadis.arabicText}
+                  </div>
+                )}
+                {hadis.turkishText && (
+                  <div className="text-base leading-relaxed whitespace-pre-wrap">
+                    {hadis.turkishText.substring(0, 500)}
+                    {hadis.turkishText.length > 500 && '...'}
+                  </div>
+                )}
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <BookOpen className="h-4 w-4" />
                 <span>Kitap: {hadis.kitapId}</span>
