@@ -1,5 +1,19 @@
 import { Hadis, Category } from './types';
 
+// JSON'daki özel karakterleri temizle (\\n, \\r, vb.)
+function cleanText(text: string): string {
+  if (!text) return '';
+  return text
+    .replace(/\\n/g, ' ')
+    .replace(/\\r/g, ' ')
+    .replace(/\\r\\n/g, ' ')
+    .replace(/\r\n/g, ' ')
+    .replace(/\n/g, ' ')
+    .replace(/\r/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 // JSON'dan hadis verilerini parse eder
 export function parseHadisData(jsonData: unknown[]): { hadisler: Hadis[]; categories: Category[] } {
   const hadisler: Hadis[] = [];
@@ -25,7 +39,7 @@ export function parseHadisData(jsonData: unknown[]): { hadisler: Hadis[]; catego
         if (!categoryMap.has(categoryKey)) {
           categories.push({
             id: bolumId || categoryId, // Bölüm ID'si kategori ID'si olarak kullanılır
-            name: name.trim().replace(/\\r\\n/g, ' ').replace(/\s+/g, ' '),
+            name: cleanText(name),
             kitapId,
             bolumId: categoryId, // İlk eleman aslında kategori sıra numarası
           });
@@ -59,45 +73,50 @@ export function parseHadisData(jsonData: unknown[]): { hadisler: Hadis[]; catego
     let turkishText = '';
     let title = '';
 
-    // İçeriği satırlara böl
-    const lines = fullContent.split(/\\r\\n|\\n|\r\n|\n/).filter((l: string) => l.trim());
+    // İçeriği satırlara böl (önce özel karakterleri temizle ama satır yapısını koru)
+    const lines = fullContent
+      .replace(/\\r\\n/g, '\n')
+      .replace(/\\n/g, '\n')
+      .replace(/\\r/g, '\n')
+      .split(/\n/)
+      .map((l: string) => l.trim())
+      .filter((l: string) => l.length > 0);
     
     let arabicStarted = false;
 
     for (const line of lines) {
-      const trimmedLine = line.trim();
-      if (!trimmedLine) continue;
+      if (!line) continue;
 
       // Başlık kontrolü (genellikle ilk satır veya numaralı başlık)
-      if (!title && (trimmedLine.match(/^\d+\./) || trimmedLine.length < 100)) {
-        if (!hasArabic || !/[\u0600-\u06FF]/.test(trimmedLine)) {
-          title = trimmedLine.substring(0, 200);
+      if (!title && (line.match(/^\d+\./) || line.length < 100)) {
+        if (!hasArabic || !/[\u0600-\u06FF]/.test(line)) {
+          title = cleanText(line).substring(0, 200);
         }
       }
 
       // Arapça metin kontrolü
-      if (/[\u0600-\u06FF]/.test(trimmedLine) || trimmedLine.includes('حَدّثَنا') || trimmedLine.includes('قَالَ')) {
-        arabicText += trimmedLine + ' ';
+      if (/[\u0600-\u06FF]/.test(line) || line.includes('حَدّثَنا') || line.includes('قَالَ')) {
+        arabicText += cleanText(line) + ' ';
         arabicStarted = true;
       } 
-        // Türkçe metin (Arapça karakter yoksa ve açıklama değilse)
-        else if (!trimmedLine.includes('AÇIKLAMA:') && !trimmedLine.match(/^\d+\./)) {
-          // Eğer Türkçe karakterler varsa veya Arapça başladıysa
-          if (arabicStarted || /[çğıöşüÇĞIİÖŞÜ]/.test(trimmedLine)) {
-            turkishText += trimmedLine + ' ';
-          }
+      // Türkçe metin (Arapça karakter yoksa ve açıklama değilse)
+      else if (!line.includes('AÇIKLAMA:') && !line.match(/^\d+\./)) {
+        // Eğer Türkçe karakterler varsa veya Arapça başladıysa
+        if (arabicStarted || /[çğıöşüÇĞIİÖŞÜ]/.test(line)) {
+          turkishText += cleanText(line) + ' ';
         }
+      }
     }
 
     // Eğer açıklama varsa ve ayrı bir alandaysa
     let cleanExplanation = '';
     if (explanation) {
-      cleanExplanation = explanation.replace(/AÇIKLAMA:\s*/g, '').trim();
+      cleanExplanation = cleanText(explanation.replace(/AÇIKLAMA:\s*/g, ''));
     }
 
     // Başlık yoksa ilk satırdan oluştur
     if (!title && fullContent) {
-      const firstLine = fullContent.split(/\\r\\n|\\n|\r\n|\n/)[0] || fullContent.substring(0, 100);
+      const firstLine = cleanText(fullContent).substring(0, 100);
       title = firstLine.replace(/[\u0600-\u06FF]/g, '').trim().substring(0, 200) || 'Hadis';
     }
 
@@ -105,9 +124,9 @@ export function parseHadisData(jsonData: unknown[]): { hadisler: Hadis[]; catego
     if (hadisId && (arabicText.trim() || turkishText.trim() || fullContent.length > 50)) {
       hadisler.push({
         id: hadisId,
-        title: title || 'Hadis',
-        arabicText: arabicText.trim(),
-        turkishText: turkishText.trim() || (fullContent.length > 200 ? fullContent.substring(0, 500) : fullContent),
+        title: cleanText(title || 'Hadis'),
+        arabicText: cleanText(arabicText),
+        turkishText: cleanText(turkishText) || (fullContent.length > 200 ? cleanText(fullContent.substring(0, 500)) : cleanText(fullContent)),
         explanation: cleanExplanation,
         kitapId,
         bolumId,
