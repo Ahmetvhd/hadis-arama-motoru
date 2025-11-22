@@ -111,8 +111,8 @@ export function HadisSearch() {
             </CardHeader>
             <CardContent className="space-y-4">
                 {hadis.arabicText && (
-                  <div className="text-right font-arabic text-lg leading-relaxed bg-muted/50 p-4 rounded-lg whitespace-pre-wrap">
-                    {hadis.arabicText}
+                  <div className="text-right font-arabic text-lg leading-relaxed bg-muted/50 p-4 rounded-lg">
+                    {hadis.arabicText.replace(/\n/g, ' ').replace(/\s+/g, ' ')}
                   </div>
                 )}
                 {hadis.turkishText && (

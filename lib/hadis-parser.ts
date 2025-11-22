@@ -113,7 +113,7 @@ export function parseHadisData(jsonData: unknown[]): { hadisler: Hadis[]; catego
 
       // Arapça metin kontrolü
       if (/[\u0600-\u06FF]/.test(line) || line.includes('حَدّثَنا') || line.includes('قَالَ')) {
-        arabicText += line + '\n';
+        arabicText += line + ' ';
         arabicStarted = true;
       } 
       // Türkçe metin (Arapça karakter yoksa ve açıklama değilse)

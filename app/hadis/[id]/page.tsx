@@ -78,8 +78,8 @@ export default async function HadisDetailPage({ params }: PageProps) {
                   <BookOpen className="h-5 w-5" />
                   Arapça Metin
                 </h2>
-                <div className="text-right font-arabic text-xl leading-relaxed bg-muted/50 p-6 rounded-lg whitespace-pre-wrap">
-                  {hadis.arabicText}
+                <div className="text-right font-arabic text-xl leading-relaxed bg-muted/50 p-6 rounded-lg">
+                  {hadis.arabicText.replace(/\n/g, ' ').replace(/\s+/g, ' ')}
                 </div>
               </div>
             )}
